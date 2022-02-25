@@ -1,4 +1,5 @@
-﻿using CompanyWebApi.Core.Domain;
+﻿using CompanyWebApi.Core;
+using CompanyWebApi.Core.Domain;
 using CompanyWebApi.Persistence;
 using CompanyWebApi.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +8,7 @@ namespace CompanyWebApi.Controllers
 {
     public class AppointmentController : MainController<Appointment>
     {
-        public AppointmentController(Repository<Appointment> appointmentRepository, UnitOfWork unitOfWork)
-            :base(appointmentRepository, unitOfWork)
+        public AppointmentController(CompanyContext context) : base(context)
         {
         }
 
@@ -20,5 +20,16 @@ namespace CompanyWebApi.Controllers
         }
 
 
+
+        [HttpGet]
+        [Route("[action]")]
+
+        public ActionResult<IEnumerable<string>> GetAllVisitorsForDateRange([FromQuery]DateRange range)
+        {
+            return Ok(UnitOfWork.Appointment.GetAllVisitorsForDateRange(range).Result);
+        }
+
+
+       
     }
 }

@@ -13,7 +13,7 @@ namespace CompanyWebApi.Core.Repositories
 
 
         Task Add(TEntity entity);
-        Task AddRange(IEnumerable<TEntity> entities);
+        Task<bool> AddRange(IEnumerable<TEntity> entities);
         Task<bool> Remove(int id);
         Task<bool> Exists(int id);
 

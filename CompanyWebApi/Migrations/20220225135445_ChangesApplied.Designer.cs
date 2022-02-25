@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CompanyWebApi.Migrations
 {
     [DbContext(typeof(CompanyContext))]
-    [Migration("20220217161540_NumberOfProductsFieldAddedToOrdersClass")]
-    partial class NumberOfProductsFieldAddedToOrdersClass
+    [Migration("20220225135445_ChangesApplied")]
+    partial class ChangesApplied
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,7 +68,7 @@ namespace CompanyWebApi.Migrations
                     b.Property<DateTime?>("DateOfClientInitialization")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("GroupTypeId")
+                    b.Property<int>("GroupTypeId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -86,10 +86,7 @@ namespace CompanyWebApi.Migrations
             modelBuilder.Entity("CompanyWebApi.Core.Domain.GroupType", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -118,12 +115,14 @@ namespace CompanyWebApi.Migrations
                     b.Property<DateTime?>("DateWhenContractWillExpire")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NumberOfProducts")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("OrderId");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("Orders");
                 });
@@ -131,57 +130,57 @@ namespace CompanyWebApi.Migrations
             modelBuilder.Entity("CompanyWebApi.Core.Domain.Product", b =>
                 {
                     b.Property<int>("ProductCode")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductCode"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("ProductCode");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("Products");
                 });
 
             modelBuilder.Entity("CompanyWebApi.Core.Domain.Appointment", b =>
                 {
-                    b.HasOne("CompanyWebApi.Core.Domain.Company", null)
+                    b.HasOne("CompanyWebApi.Core.Domain.Company", "Company")
                         .WithMany("Appointments")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("CompanyWebApi.Core.Domain.Company", b =>
                 {
                     b.HasOne("CompanyWebApi.Core.Domain.GroupType", "GroupType")
                         .WithMany("Company")
-                        .HasForeignKey("GroupTypeId");
+                        .HasForeignKey("GroupTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("GroupType");
                 });
 
             modelBuilder.Entity("CompanyWebApi.Core.Domain.Order", b =>
                 {
-                    b.HasOne("CompanyWebApi.Core.Domain.Company", null)
+                    b.HasOne("CompanyWebApi.Core.Domain.Company", "Company")
                         .WithMany("Orders")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("CompanyWebApi.Core.Domain.Product", b =>
-                {
-                    b.HasOne("CompanyWebApi.Core.Domain.Order", null)
-                        .WithMany("Products")
-                        .HasForeignKey("OrderId");
+                    b.HasOne("CompanyWebApi.Core.Domain.Product", "Product")
+                        .WithMany("Orders")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("CompanyWebApi.Core.Domain.Company", b =>
@@ -196,9 +195,9 @@ namespace CompanyWebApi.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("CompanyWebApi.Core.Domain.Order", b =>
+            modelBuilder.Entity("CompanyWebApi.Core.Domain.Product", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

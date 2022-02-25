@@ -6,13 +6,16 @@ namespace CompanyWebApi.Core.Domain
 {
     public class Company
     {
+        private DateTime? _dateOfClientInitialization;
+
+
+
         public int Id { get; set; }
-        public string? Name { get; set; }
-        public GroupType? GroupType { get; set; }
+        public string Name { get; set; }
+        public int GroupTypeId { get; set; }
+        public virtual GroupType? GroupType { get; set; }
         public DateTime CreationDate { get; }
         public virtual IList<Order>? Orders { get; set; }
-
-        private DateTime? _dateOfClientInitialization;
         public DateTime? DateOfClientInitialization
         {
             get => _dateOfClientInitialization;
@@ -41,7 +44,7 @@ namespace CompanyWebApi.Core.Domain
 
 
 
-
+        
 
         public Company()
         {

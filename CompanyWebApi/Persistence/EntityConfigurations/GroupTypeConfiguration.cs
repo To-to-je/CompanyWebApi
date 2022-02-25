@@ -10,10 +10,16 @@ namespace CompanyWebApi.Persistence.EntityConfigurations
         {
             builder.ToTable("GroupTypes");
 
+            builder.HasKey(g => g.Id);
+
+            builder.Property(g => g.Id).ValueGeneratedNever();
+
             builder.Property(g => g.Type).HasMaxLength(100).IsRequired();
 
             builder.HasMany(g => g.Company)
-                .WithOne(c => c.GroupType);
+                .WithOne(c => c.GroupType)
+                .HasForeignKey(c => c.GroupTypeId);
+
         }
     }
 }

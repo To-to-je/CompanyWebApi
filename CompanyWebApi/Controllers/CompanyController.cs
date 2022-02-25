@@ -2,6 +2,7 @@
 
 using CompanyWebApi.Core;
 using CompanyWebApi.Core.Domain;
+using CompanyWebApi.Persistence;
 using CompanyWebApi.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +10,11 @@ namespace CompanyWebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CompaniesController : MainController<Company>
+    public class CompanyController : MainController<Company>
     {
 
 
-        public CompaniesController(Repository<Company> companyRepository, IUnitOfWork unitOfWork) 
-            :base(companyRepository, unitOfWork)
+        public CompanyController(CompanyContext context) : base(context)
         {
             
         }
@@ -37,7 +37,7 @@ namespace CompanyWebApi.Controllers
 
         [HttpGet]
         [Route("/[action]")]
-        public ActionResult<bool> HasAppointmentForDateRange(DateRange range, int companyId)
+        public ActionResult<bool> HasAppointmentForDateRange([FromQuery] DateRange range, int companyId)
         {
 
             return Ok(UnitOfWork.Company.HasAppointmentForDateRange(range, companyId).Result);

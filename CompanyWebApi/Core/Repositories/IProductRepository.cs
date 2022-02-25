@@ -10,7 +10,7 @@ namespace CompanyWebApi.Core.Repositories
 
         Task<IEnumerable<Product>> GetProductsSoldInDateRange(DateRange range);
 
-        Task<int?> GetNumberOfSpecificProductSoldInPeriod(DateRange range, Product product);
+        Task<int?> GetNumberOfSpecificProductSoldInPeriod(DateRange range, int productId);
         Task Change(Product product);
 
     }

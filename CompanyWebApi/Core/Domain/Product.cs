@@ -2,13 +2,8 @@
 
 public class Product
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
     public int ProductCode { get; set; }
+    public virtual IEnumerable<Order>? Orders { get; set; }
 
-    public Product(string name, int productCode)
-    {
-        Name = name;
-        ProductCode = productCode;
-        
-    }
 }

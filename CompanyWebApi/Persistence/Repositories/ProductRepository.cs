@@ -19,7 +19,7 @@ namespace CompanyWebApi.Persistence.Repositories
             if (CompanyContext?.Orders != null && CompanyContext.Products != null)
             {
                 var productsSold = CompanyContext?.Orders
-                    .SelectMany(order => order.Products!)
+                    .Select(order => order.Product!)
                     .GroupBy(p => p)
                     .Select(product => new
                     {
@@ -45,8 +45,7 @@ namespace CompanyWebApi.Persistence.Repositories
             {
                 var productsSoldInCurrentDateRange = await CompanyContext?.Orders
                     .Where(o => o.DateOfOrder >= range.Start && o.DateOfOrder <= range.End)
-                    .SelectMany(o => o.Products!)
-                    .Distinct()
+                    .Select(o => o.Product!)
                     .ToListAsync()!;
                 return productsSoldInCurrentDateRange!;
             }
@@ -56,12 +55,12 @@ namespace CompanyWebApi.Persistence.Repositories
             }
         }
 
-        public async Task<int?>  GetNumberOfSpecificProductSoldInPeriod(DateRange range, Product product)
+        public async Task<int?>  GetNumberOfSpecificProductSoldInPeriod(DateRange range, int productId)
         {
             if (CompanyContext?.Orders != null && CompanyContext?.Products != null)
             {
                 var count = await CompanyContext?.Orders
-                    .Where(o => o.Products != null && o.Products.Contains(product) && o.DateOfOrder >= range.Start && o.DateOfOrder <= range.End)
+                    .Where(o => o.Product != null && o.ProductId == productId && o.DateOfOrder >= range.Start && o.DateOfOrder <= range.End)
                     .Select(o => o)
                     .CountAsync()!;
                 return count;

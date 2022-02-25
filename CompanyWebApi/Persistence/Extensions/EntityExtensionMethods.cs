@@ -8,17 +8,17 @@ namespace CompanyWebApi.Persistence.Extensions
 {
     public static class EntityExtensionMethods
     {
-        public static async void Change<TClass>(this DbContext context, TClass changes) where TClass : class
-        {
-            //var dbSet = context.Set<TClass>();
-            //var properties = dbSet.EntityType.GetProperties();
+        //public static async void Change<TClass>(this DbContext context, TClass changes) where TClass : class
+        //{
+        //    var dbSet = context.Set<TClass>();
+        //    var properties = dbSet.EntityType.GetProperties();
 
-            //foreach (var property in properties)
-            //{
-            //    new CustomAttributeData()
-            //}
+        //    foreach (var property in properties)
+        //    {
+        //        new CustomAttributeData()
+        //    }
 
 
-        }
+        //}
     }
 }

@@ -17,6 +17,9 @@ namespace CompanyWebApi.Persistence.EntityConfigurations
             builder.Property(a => a.EmployeeName).HasMaxLength(100);
             builder.Property(a => a.Title).HasMaxLength(200);
 
+            builder.HasOne(a => a.Company)
+                .WithMany(c => c.Appointments);
+
         }
     }
 

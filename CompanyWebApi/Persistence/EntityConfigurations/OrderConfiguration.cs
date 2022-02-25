@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using CompanyWebApi.Core.Domain;
+﻿using CompanyWebApi.Core.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,12 +11,16 @@ namespace CompanyWebApi.Persistence.EntityConfigurations
 
             builder.HasKey(o => o.OrderId);
 
-            
+
+            builder.Property(c => c.CompanyId).IsRequired();
             builder.Property(o => o.DateOfOrder).IsRequired();
             builder.Property(o => o.OrderId).ValueGeneratedNever();
-            
 
-            builder.HasMany(c => c.Products);
+
+            builder.HasOne(o => o.Company)
+                .WithMany(c => c.Orders);
+            builder.HasOne(c => c.Product)
+                .WithMany(p => p.Orders);
 
         }
     }

@@ -45,7 +45,11 @@ namespace CompanyWebApi.Persistence.Repositories
         {
             if (DbSet.Contains(entity) == false)
             {
+
                 await DbSet.AddAsync(entity);
+
+                await Context.SaveChangesAsync();
+
             }
             else
             {
@@ -54,18 +58,19 @@ namespace CompanyWebApi.Persistence.Repositories
 
         }
 
-        public async Task AddRange(IEnumerable<TEntity> entities)
+        public async Task<bool> AddRange(IEnumerable<TEntity> entities)
         {
             try
             {
-                await DbSet.AddRangeAsync(entities);
+                DbSet.AddRange(entities);
+                await Context.SaveChangesAsync();
+                return true;
             }
             catch (Exception ex)
             {
                 throw new InvalidOperationException(ex.Message);
             }
         }
-
 
         public async Task<bool> Remove(int id)
         {
@@ -76,6 +81,7 @@ namespace CompanyWebApi.Persistence.Repositories
 
                 var currentEntityTask = await DbSet.FindAsync(id);
                 DbSet.Remove(currentEntityTask!);
+                await Context.SaveChangesAsync();
 
                 return true;
 

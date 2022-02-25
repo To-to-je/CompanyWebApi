@@ -1,4 +1,5 @@
 ﻿using CompanyWebApi.Core.Domain;
+using MessagePack.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,13 +14,18 @@ namespace CompanyWebApi.Persistence.EntityConfigurations
             builder.HasKey(c => c.Id);
 
             builder.Property(c => c.CreationDate).IsRequired();
+            builder.Property(c => c.GroupTypeId).IsRequired();
             builder.Property(c => c.Name).IsRequired().HasMaxLength(100);
 
 
-
-            builder.HasMany(c => c.Orders);
-            builder.HasMany(c => c.Appointments);
-            builder.HasOne(c => c.GroupType);
+            builder.HasOne(c => c.GroupType)
+                .WithMany(g => g.Company);
+            builder.HasMany(c => c.Orders)
+                .WithOne(o=>o.Company)
+                .HasForeignKey(o=>o.CompanyId);
+            builder.HasMany(c => c.Appointments)
+                .WithOne(a=>a.Company)
+                .HasForeignKey(a=>a.CompanyId);
         }
     }
 }

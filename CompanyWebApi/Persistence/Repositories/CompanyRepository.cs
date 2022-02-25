@@ -23,7 +23,7 @@ namespace CompanyWebApi.Persistence.Repositories
 
                 return await CompanyContext.Companies.
                     Where(c => c.Orders != null && c.Orders
-                        .Sum(o => o.NumberOfProducts) == totalNumberOfAvailableProducts)
+                        .Distinct().Count() == totalNumberOfAvailableProducts)
                     .Select(c => c).ToListAsync();
             }
             else
@@ -40,8 +40,9 @@ namespace CompanyWebApi.Persistence.Repositories
 
                 return await CompanyContext.Companies
                     .Where(c => c.Orders != null && c.Orders
-                        .Any(o => o.DateOfCompanyProductionStateInitialization == null)
-                    ).ToListAsync();
+                        .Any(o => DateTime.Compare(o.DateOfCompanyProductionStateInitialization, DateTime.Now) >0))
+                    .Select(c=>c)
+                    .ToListAsync();
 
             }
             else

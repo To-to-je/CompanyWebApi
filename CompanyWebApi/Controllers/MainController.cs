@@ -1,4 +1,5 @@
 ﻿using CompanyWebApi.Core;
+using CompanyWebApi.Persistence;
 using CompanyWebApi.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,21 +12,29 @@ namespace CompanyWebApi.Controllers
         private readonly Repository<TClass> _repository;
         protected readonly IUnitOfWork UnitOfWork;
 
-        public MainController(Repository<TClass> repository, IUnitOfWork unitOfWork)
+        public MainController(CompanyContext context)
         {
-            _repository = repository;
-            UnitOfWork = unitOfWork;
+            _repository = new Repository<TClass>(context);
+            UnitOfWork = new UnitOfWork(context);
         }
 
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> Add(TClass model)
+        public async Task<ActionResult> Add([FromQuery] TClass model)
         {
             await _repository.Add(model);
 
             return Ok();
 
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public ActionResult AddRange([FromQuery] IEnumerable<TClass> entities)
+        {
+            return Ok(_repository.AddRange(entities).Result);
         }
 
         [HttpGet]
@@ -41,9 +50,18 @@ namespace CompanyWebApi.Controllers
 
         [HttpGet]
         [Route("[action]")]
-        public ActionResult<TClass> Get(int id)
+        public ActionResult<TClass> Get([FromQuery] int id)
         {
             return Ok(_repository.Get(id).Result);
         }
+
+
+        [HttpDelete]
+        [Route("[action]")]
+        public ActionResult<TClass> Remove([FromQuery] int id)
+        {
+            return Ok(_repository.Remove(id));
+        }
+
     }
 }

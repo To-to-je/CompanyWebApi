@@ -5,10 +5,34 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CompanyWebApi.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "GroupTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    ProductCode = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.ProductCode);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Companies",
                 columns: table => new
@@ -16,12 +40,19 @@ namespace CompanyWebApi.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    GroupTypeId = table.Column<int>(type: "int", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateOfClientInitialization = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Companies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Companies_GroupTypes_GroupTypeId",
+                        column: x => x.GroupTypeId,
+                        principalTable: "GroupTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -32,8 +63,8 @@ namespace CompanyWebApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     EmployeeName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    VenueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: true)
+                    AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,7 +73,8 @@ namespace CompanyWebApi.Migrations
                         name: "FK_Appointments_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,10 +82,11 @@ namespace CompanyWebApi.Migrations
                 columns: table => new
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    NumberOfProducts = table.Column<int>(type: "int", nullable: false),
                     DateOfOrder = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateWhenContractWillExpire = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DateOfCompanyProductionStateInitialization = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CompanyId = table.Column<int>(type: "int", nullable: true)
+                    DateOfCompanyProductionStateInitialization = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -62,26 +95,32 @@ namespace CompanyWebApi.Migrations
                         name: "FK_Orders_Companies_CompanyId",
                         column: x => x.CompanyId,
                         principalTable: "Companies",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "OrderProduct",
                 columns: table => new
                 {
-                    ProductCode = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OrderId = table.Column<int>(type: "int", nullable: true)
+                    OrdersOrderId = table.Column<int>(type: "int", nullable: false),
+                    ProductsProductCode = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.ProductCode);
+                    table.PrimaryKey("PK_OrderProduct", x => new { x.OrdersOrderId, x.ProductsProductCode });
                     table.ForeignKey(
-                        name: "FK_Products_Orders_OrderId",
-                        column: x => x.OrderId,
+                        name: "FK_OrderProduct_Orders_OrdersOrderId",
+                        column: x => x.OrdersOrderId,
                         principalTable: "Orders",
-                        principalColumn: "OrderId");
+                        principalColumn: "OrderId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderProduct_Products_ProductsProductCode",
+                        column: x => x.ProductsProductCode,
+                        principalTable: "Products",
+                        principalColumn: "ProductCode",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -90,14 +129,19 @@ namespace CompanyWebApi.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Companies_GroupTypeId",
+                table: "Companies",
+                column: "GroupTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderProduct_ProductsProductCode",
+                table: "OrderProduct",
+                column: "ProductsProductCode");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CompanyId",
                 table: "Orders",
                 column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_OrderId",
-                table: "Products",
-                column: "OrderId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -106,13 +150,19 @@ namespace CompanyWebApi.Migrations
                 name: "Appointments");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "OrderProduct");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
                 name: "Companies");
+
+            migrationBuilder.DropTable(
+                name: "GroupTypes");
         }
     }
 }

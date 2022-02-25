@@ -5,7 +5,11 @@
         public DateTime Start { get; private set; }
         public DateTime End { get; private set; }
 
-
+        public DateRange()
+        {
+            Start = DateTime.MinValue;
+            End = DateTime.MaxValue;
+        }
         public DateRange(DateTime start, DateTime end)
         {
             Start = start;
