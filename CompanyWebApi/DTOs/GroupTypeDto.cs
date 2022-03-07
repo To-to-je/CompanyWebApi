@@ -1,6 +1,4 @@
-﻿using CompanyWebApi.DBOs.MappingProfiles;
-
-namespace CompanyWebApi.DBOs
+﻿namespace CompanyWebApi.DTOs
 {
     public class GroupTypeDto : BaseDto
     {

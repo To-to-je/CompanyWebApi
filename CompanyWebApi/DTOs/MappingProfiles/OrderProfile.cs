@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using CompanyWebApi.Core.Domain;
 
-namespace CompanyWebApi.DBOs.MappingProfiles
+namespace CompanyWebApi.DTOs.MappingProfiles
 {
     public class OrderProfile : Profile
     {

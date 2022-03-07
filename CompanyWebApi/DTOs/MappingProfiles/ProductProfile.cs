@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using CompanyWebApi.Core.Domain;
+using CompanyWebApi.DTOs;
 
-namespace CompanyWebApi.DBOs.MappingProfiles
+namespace CompanyWebApi.DTOs.MappingProfiles
 {
     public class ProductProfile :Profile
     {

@@ -1,6 +1,6 @@
-﻿using CompanyWebApi.DBOs.MappingProfiles;
+﻿using CompanyWebApi.DTOs;
 
-namespace CompanyWebApi.DBOs
+namespace CompanyWebApi.DTOs
 {
     public class OrderDto : BaseDto
     {

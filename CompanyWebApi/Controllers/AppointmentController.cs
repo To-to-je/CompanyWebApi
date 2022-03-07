@@ -2,6 +2,7 @@
 using CompanyWebApi.Core;
 using CompanyWebApi.Core.Domain;
 using CompanyWebApi.DBOs;
+using CompanyWebApi.DTOs;
 using CompanyWebApi.Persistence;
 using CompanyWebApi.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;

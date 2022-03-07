@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CompanyWebApi.Core.Domain;
-using CompanyWebApi.DBOs;
+using CompanyWebApi.DTOs;
 using CompanyWebApi.Persistence;
 
 namespace CompanyWebApi.Controllers
@@ -12,3 +12,4 @@ namespace CompanyWebApi.Controllers
         }
     }
 }
+

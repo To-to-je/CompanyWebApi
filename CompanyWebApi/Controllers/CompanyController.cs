@@ -3,11 +3,9 @@
 using AutoMapper;
 using CompanyWebApi.Core;
 using CompanyWebApi.Core.Domain;
-using CompanyWebApi.DBOs;
+using CompanyWebApi.DTOs;
 using CompanyWebApi.Persistence;
-using CompanyWebApi.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 
 namespace CompanyWebApi.Controllers

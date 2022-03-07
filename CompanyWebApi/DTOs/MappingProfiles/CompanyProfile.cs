@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CompanyWebApi.Core.Domain;
+using CompanyWebApi.DTOs;
 
 namespace CompanyWebApi.DBOs.MappingProfiles
 {
