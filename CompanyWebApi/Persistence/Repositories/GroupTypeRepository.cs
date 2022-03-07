@@ -19,12 +19,12 @@ namespace CompanyWebApi.Persistence.Repositories
             if (CompanyContext?.GroupTypes != null)
             {
                 var frequentGroupType = await CompanyContext?.GroupTypes
-                    .Where(g => g.Company != null)
+                    .Where(g => g.Companies != null)
                     .Select(group => new
                     {
                         GroupName = group.Type,
 
-                        NumberOfCompanies = group.Company!.Count
+                        NumberOfCompanies = group.Companies!.Count
                     })
                     .OrderByDescending(group => group.NumberOfCompanies)
                     .Take(CompanyContext.GroupTypes.Count())

@@ -16,7 +16,7 @@ namespace CompanyWebApi.Persistence.EntityConfigurations
 
             builder.Property(g => g.Type).HasMaxLength(100).IsRequired();
 
-            builder.HasMany(g => g.Company)
+            builder.HasMany(g => g.Companies)
                 .WithOne(c => c.GroupType)
                 .HasForeignKey(c => c.GroupTypeId);
 

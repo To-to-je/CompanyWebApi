@@ -104,7 +104,7 @@ namespace CompanyWebApi.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("DateOfCompanyProductionStateInitialization")
+                    b.Property<DateTime>("DateOfCompanyProductionStateInitialization")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateOfOrder")
@@ -154,7 +154,7 @@ namespace CompanyWebApi.Migrations
             modelBuilder.Entity("CompanyWebApi.Core.Domain.Company", b =>
                 {
                     b.HasOne("CompanyWebApi.Core.Domain.GroupType", "GroupType")
-                        .WithMany("Company")
+                        .WithMany("Companies")
                         .HasForeignKey("GroupTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -190,7 +190,7 @@ namespace CompanyWebApi.Migrations
 
             modelBuilder.Entity("CompanyWebApi.Core.Domain.GroupType", b =>
                 {
-                    b.Navigation("Company");
+                    b.Navigation("Companies");
                 });
 
             modelBuilder.Entity("CompanyWebApi.Core.Domain.Product", b =>

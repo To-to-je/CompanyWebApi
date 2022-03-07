@@ -4,9 +4,8 @@ namespace CompanyWebApi.Core.Repositories
 {
     public interface IAppointmentRepository : IRepository<Appointment>
     {
-        Task<IEnumerable<Company>> GetMostFrequentVisitors(int topNumber);
-        Task<IEnumerable<string?>?> GetAllVisitorsForDateRange(DateRange range);
-        Task Change(Appointment appointment);
+        Task<IQueryable<Company>> GetMostFrequentVisitors(int topNumber);
+        Task<IQueryable<string?>?> GetAllVisitorsForDateRange(DateRange range);
 
     }
 }

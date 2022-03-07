@@ -54,7 +54,7 @@ namespace CompanyWebApi.Migrations
                     b.ToTable("Appointments", (string)null);
                 });
 
-            modelBuilder.Entity("CompanyWebApi.Core.Domain.Company", b =>
+            modelBuilder.Entity("CompanyWebApi.Core.Domain.Companies", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -144,19 +144,19 @@ namespace CompanyWebApi.Migrations
 
             modelBuilder.Entity("CompanyWebApi.Core.Domain.Appointment", b =>
                 {
-                    b.HasOne("CompanyWebApi.Core.Domain.Company", "Company")
+                    b.HasOne("CompanyWebApi.Core.Domain.Companies", "Companies")
                         .WithMany("Appointments")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.Navigation("Companies");
                 });
 
-            modelBuilder.Entity("CompanyWebApi.Core.Domain.Company", b =>
+            modelBuilder.Entity("CompanyWebApi.Core.Domain.Companies", b =>
                 {
                     b.HasOne("CompanyWebApi.Core.Domain.GroupType", "GroupType")
-                        .WithMany("Company")
+                        .WithMany("Companies")
                         .HasForeignKey("GroupTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -166,7 +166,7 @@ namespace CompanyWebApi.Migrations
 
             modelBuilder.Entity("CompanyWebApi.Core.Domain.Order", b =>
                 {
-                    b.HasOne("CompanyWebApi.Core.Domain.Company", "Company")
+                    b.HasOne("CompanyWebApi.Core.Domain.Companies", "Companies")
                         .WithMany("Orders")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -178,12 +178,12 @@ namespace CompanyWebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.Navigation("Companies");
 
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("CompanyWebApi.Core.Domain.Company", b =>
+            modelBuilder.Entity("CompanyWebApi.Core.Domain.Companies", b =>
                 {
                     b.Navigation("Appointments");
 
@@ -192,7 +192,7 @@ namespace CompanyWebApi.Migrations
 
             modelBuilder.Entity("CompanyWebApi.Core.Domain.GroupType", b =>
                 {
-                    b.Navigation("Company");
+                    b.Navigation("Companies");
                 });
 
             modelBuilder.Entity("CompanyWebApi.Core.Domain.Product", b =>

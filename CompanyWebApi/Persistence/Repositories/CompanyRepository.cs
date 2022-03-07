@@ -13,18 +13,18 @@ namespace CompanyWebApi.Persistence.Repositories
 
         public CompanyContext? CompanyContext => Context as CompanyContext;
 
-        public async Task<IEnumerable<Company>> GetCompaniesBenefitedFromAllProducts()
+        public async Task<IQueryable<Company>> GetCompaniesBenefitedFromAllProducts()
         {
 
             if (CompanyContext?.Products != null && CompanyContext.Companies != null)
             {
-                var totalNumberOfAvailableProducts = CompanyContext.Products
-                    .Select(x => x).Count();
+                var totalNumberOfAvailableProducts = await CompanyContext.Products
+                    .Select(x => x).CountAsync();
 
-                return await CompanyContext.Companies.
+                return CompanyContext.Companies.
                     Where(c => c.Orders != null && c.Orders
                         .Distinct().Count() == totalNumberOfAvailableProducts)
-                    .Select(c => c).ToListAsync();
+                    .Select(c => c);
             }
             else
             {
@@ -33,16 +33,15 @@ namespace CompanyWebApi.Persistence.Repositories
 
         }
 
-        public async Task<IEnumerable<Company>> GetCompaniesWithNotInitializedProductionState()
+        public IQueryable<Company> GetCompaniesWithNotInitializedProductionState()
         {
             if (CompanyContext?.Companies != null)
             {
 
-                return await CompanyContext.Companies
+                return CompanyContext.Companies
                     .Where(c => c.Orders != null && c.Orders
-                        .Any(o => DateTime.Compare(o.DateOfCompanyProductionStateInitialization, DateTime.Now) >0))
-                    .Select(c=>c)
-                    .ToListAsync();
+                        .Any(o => DateTime.Compare(o.DateOfCompanyProductionStateInitialization, DateTime.Now) > 0))
+                    .Select(c => c);
 
             }
             else
@@ -89,7 +88,7 @@ namespace CompanyWebApi.Persistence.Repositories
         {
             if (CompanyContext?.Companies != null)
             {
-                var companyInDatabase = await CompanyContext?.Companies.FirstOrDefaultAsync(c=>c.Id == company.Id)!;
+                var companyInDatabase = await CompanyContext?.Companies.FirstOrDefaultAsync(c => c.Id == company.Id)!;
 
                 if (companyInDatabase != null)
                 {
@@ -105,6 +104,6 @@ namespace CompanyWebApi.Persistence.Repositories
             }
         }
 
-        
+
     }
 }

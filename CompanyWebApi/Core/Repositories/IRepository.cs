@@ -6,9 +6,9 @@ namespace CompanyWebApi.Core.Repositories
     {
         
         Task<TEntity?> Get(int id);
-        Task<IEnumerable<TEntity>>  GetAll();
+        IQueryable<TEntity>  GetAll();
         Task<IEnumerable<TEntity>>  Find(Expression<Func<TEntity, bool>> predicate);
-
+            
         
 
 

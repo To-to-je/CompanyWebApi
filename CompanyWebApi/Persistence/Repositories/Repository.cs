@@ -1,11 +1,12 @@
-﻿using System.Linq.Expressions;
-using CompanyWebApi.Core.Repositories;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using CompanyWebApi.Core.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CompanyWebApi.Persistence.Repositories
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+
+
     {
         protected readonly DbContext Context;
         protected readonly DbSet<TEntity> DbSet;
@@ -24,16 +25,16 @@ namespace CompanyWebApi.Persistence.Repositories
             return await DbSet.FindAsync(id) ?? throw new NullReferenceException();
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public IQueryable<TEntity> GetAll()
         {
-            return await DbSet.ToListAsync() ?? throw new NullReferenceException();
+            return DbSet ?? throw new NullReferenceException();
         }
 
         public async Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate)
         {
             if (await DbSet.Where(predicate).AnyAsync())
             {
-                return await DbSet.Where(predicate).Select(e=>e).ToListAsync();
+                return await DbSet.Where(predicate).Select(e => e).ToListAsync();
             }
             else
             {
@@ -77,7 +78,7 @@ namespace CompanyWebApi.Persistence.Repositories
             try
             {
 
-                if (! Exists(id).Result) return false;
+                if (!Exists(id).Result) return false;
 
                 var currentEntityTask = await DbSet.FindAsync(id);
                 DbSet.Remove(currentEntityTask!);

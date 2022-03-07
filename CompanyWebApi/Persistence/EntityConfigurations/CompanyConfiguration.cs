@@ -19,7 +19,7 @@ namespace CompanyWebApi.Persistence.EntityConfigurations
 
 
             builder.HasOne(c => c.GroupType)
-                .WithMany(g => g.Company);
+                .WithMany(g => g.Companies);
             builder.HasMany(c => c.Orders)
                 .WithOne(o=>o.Company)
                 .HasForeignKey(o=>o.CompanyId);

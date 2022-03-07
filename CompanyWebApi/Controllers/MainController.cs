@@ -1,29 +1,42 @@
-﻿using CompanyWebApi.Core;
+﻿using AutoMapper;
+using CompanyWebApi.Core;
 using CompanyWebApi.Persistence;
 using CompanyWebApi.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CompanyWebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class MainController<TClass> : ControllerBase where TClass : class, new()
+    public class MainController<TClass, TClassDto> : ControllerBase
+        where TClass : class, new()
+        where TClassDto : class, new()
+
     {
         private readonly Repository<TClass> _repository;
-        protected readonly IUnitOfWork UnitOfWork;
+        protected readonly IMapper Mapper;
+        protected readonly UnitOfWork UnitOfWork;
 
-        public MainController(CompanyContext context)
+        public MainController(CompanyContext context, IMapper mapper)
         {
             _repository = new Repository<TClass>(context);
             UnitOfWork = new UnitOfWork(context);
-        }
+            Mapper = mapper;
+        }   
 
 
         [HttpPost]
         [Route("[action]")]
-        public async Task<ActionResult> Add([FromQuery] TClass model)
+        public async Task<ActionResult> Add([FromQuery] TClassDto modelDbo)
         {
+
+            TClass model = Mapper.Map<TClass>(modelDbo);
+
             await _repository.Add(model);
+
+            await UnitOfWork.Complete();
+
 
             return Ok();
 
@@ -32,35 +45,67 @@ namespace CompanyWebApi.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public ActionResult AddRange([FromQuery] IEnumerable<TClass> entities)
+        public async Task<ActionResult> AddRange([FromQuery] IEnumerable<TClassDto> entitiesDbo)
         {
-            return Ok(_repository.AddRange(entities).Result);
+            List<TClass> entities = new();
+
+            foreach (var entityDbo in entitiesDbo)
+            {
+                entities.Add(Mapper.Map<TClass>(entityDbo));
+            }
+
+            await _repository.AddRange(entities);
+            await UnitOfWork.Complete();
+
+            return Ok();
         }
+
+
+        private async Task<List<TClassDto>> GetAllAsync()
+        {
+
+            var listOfEntities = _repository.GetAll();
+
+            var listOfDboEntities = await Mapper.ProjectTo<TClassDto>(listOfEntities).ToListAsync();
+
+            return listOfDboEntities;
+
+        }
+
 
         [HttpGet]
         [Route("[action]")]
-        public ActionResult<List<TClass>> GetAll()
+        public ActionResult<List<TClassDto>> GetAll()
         {
 
-            var listOfEntities = _repository.GetAll().Result;
-
-            return Ok(listOfEntities);
+            return Ok(GetAllAsync().Result);
 
         }
+
+
 
         [HttpGet]
         [Route("[action]")]
-        public ActionResult<TClass> Get([FromQuery] int id)
+        public ActionResult<TClassDto> Get([FromQuery] int id)
         {
-            return Ok(_repository.Get(id).Result);
+
+            var entity = _repository.Get(id).Result;
+            var dboEntity = Mapper.Map<TClassDto>(entity);
+
+            return Ok(dboEntity);
+
         }
+
 
 
         [HttpDelete]
         [Route("[action]")]
-        public ActionResult<TClass> Remove([FromQuery] int id)
+        public async Task<ActionResult> Remove([FromQuery] int id)
         {
-            return Ok(_repository.Remove(id));
+            await _repository.Remove(id);
+            await UnitOfWork.Complete();
+            return Ok();
+
         }
 
     }
